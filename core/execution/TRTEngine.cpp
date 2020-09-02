@@ -42,11 +42,10 @@ TRTEngine::TRTEngine(std::string mod_name, std::string serialized_engine, std::s
         util::logging::get_logger().get_reportable_severity(),
         util::logging::get_logger().get_is_colored_output_on()) {
 
-    CudaDevice cuda_device;
     // Deserialize device meta data if device_info is non-empty
     if (!serialized_device_info.empty())
     {
-        cuda_device = deserialize_device(serialized_device_info);
+        auto cuda_device = deserialize_device(serialized_device_info);
         // Set CUDA device as configured in serialized meta data
         set_cuda_device(cuda_device);
     }
@@ -119,6 +118,7 @@ static auto TRTORCH_UNUSED TRTEngineTSRegistrtion = torch::class_<TRTEngine>("te
 	    auto trt_engine = std::string((const char*)serialized_trt_engine->data(), serialized_trt_engine->size());
 
 	    CudaDevice cuda_device;
+	    get_cuda_device(cuda_device);
 	    std::vector<std::string> serialize_info;
 	    serialize_info.push_back(serialize_device(cuda_device));
 	    serialize_info.push_back(trt_engine);
@@ -155,13 +155,13 @@ void CudaDevice::set_minor(int minor) {
 }
 
 void set_cuda_device(CudaDevice& cuda_device) {
-    TRTORCH_CHECK((cudaSetDevice(cuda_device.id) != cudaSuccess), "Unable to set device: " << cuda_device.id);
+    TRTORCH_CHECK((cudaSetDevice(cuda_device.id) == cudaSuccess), "Unable to set device: " << cuda_device.id);
 }
 
 void get_cuda_device(CudaDevice& cuda_device) {
-    TRTORCH_CHECK((cudaGetDevice(&cuda_device.id) != cudaSuccess), "Unable to get current device: " << cuda_device.id);
+    TRTORCH_CHECK((cudaGetDevice(&cuda_device.id) == cudaSuccess), "Unable to get current device: " << cuda_device.id);
     cudaDeviceProp device_prop;
-    TRTORCH_CHECK((cudaGetDeviceProperties(&device_prop, cuda_device.id) != cudaSuccess), "Unable to get CUDA properties from device:" << cuda_device.id);
+    TRTORCH_CHECK((cudaGetDeviceProperties(&device_prop, cuda_device.id) == cudaSuccess), "Unable to get CUDA properties from device:" << cuda_device.id);
     cuda_device.set_major(device_prop.major);
     cuda_device.set_minor(device_prop.minor);
 }
