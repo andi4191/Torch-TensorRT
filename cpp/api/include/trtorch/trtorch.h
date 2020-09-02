@@ -404,4 +404,13 @@ TRTORCH_API torch::jit::Module CompileGraph(const torch::jit::Module& module, Ex
  * @return: std::string: Serialized TensorRT engine equivilant to the method graph
  */
 TRTORCH_API std::string ConvertGraphToTRTEngine(const torch::jit::Module& module, std::string method_name, ExtraInfo info);
+
+/**
+ * @brief Set gpu device id
+ *
+ * @param gpu_id
+ *
+ * Sets gpu id using cudaSetDevice
+ */
+TRTORCH_API void set_device(const int gpu_id);
 } // namespace trtorch

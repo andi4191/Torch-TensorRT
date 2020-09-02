@@ -2,6 +2,7 @@
 #include <memory>
 #include <sstream>
 #include <vector>
+#include <cuda_runtime.h>
 
 #include "NvInfer.h"
 
@@ -42,7 +43,15 @@ c10::FunctionSchema GenerateGraphSchema(torch::jit::script::Module mod, std::str
 
 
 void AddEngineToGraph(torch::jit::script::Module mod, std::shared_ptr<torch::jit::Graph>& g, std::string& serialized_engine) {
-    auto engine_ptr = c10::make_intrusive<execution::TRTEngine>(mod._ivalue()->name(), serialized_engine);
+    execution::CudaDevice device;
+
+    // Read current CUDA device properties
+    execution::get_cuda_device(device);
+
+    // Serialize current device information
+    auto device_info = execution::serialize_device(device);
+
+    auto engine_ptr = c10::make_intrusive<execution::TRTEngine>(mod._ivalue()->name(), serialized_engine, device_info);
     // Get required metadata about the engine out
     auto num_io = engine_ptr->num_io;
     auto name = engine_ptr->name;
@@ -162,6 +171,10 @@ torch::jit::script::Module CompileGraph(const torch::jit::script::Module& mod,
     }
 
     return new_mod;
+}
+
+void set_device(const int gpu_id) {
+    TRTORCH_CHECK((cudaSetDevice(gpu_id) != cudaSuccess), "Unable to set CUDA device: " << gpu_id);
 }
 
 } // namespace core
