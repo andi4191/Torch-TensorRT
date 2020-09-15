@@ -38,6 +38,7 @@ void LowerGraph(std::shared_ptr<torch::jit::Graph>& g) {
     //torch::jit::UnrollLoops(g);
     torch::jit::EliminateCommonSubexpression(g);
     passes::UnpackAddMM(g);
+    passes::UnpackLinear(g);
     //passes::UnpackBatchNorm(g);
     passes::UnpackLogSoftmax(g);
     passes::RemoveTo(g);

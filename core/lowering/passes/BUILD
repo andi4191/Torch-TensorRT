@@ -22,6 +22,7 @@ cc_library(
         "remove_dropout.cpp",
         "remove_to.cpp",
         "unpack_addmm.cpp",
+        "unpack_linear.cpp",
         "unpack_batch_norm.cpp",
         "unpack_log_softmax.cpp",
     ],
