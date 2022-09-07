@@ -13,6 +13,7 @@ namespace tests {
 namespace util {
 
 std::vector<torch::jit::IValue> EvaluateGraph(const torch::jit::Block* b, std::vector<torch::jit::IValue> inputs) {
+  core::util::initCuda();
   LOG_DEBUG("Running Torch-TensorRT Version");
 
   core::conversion::ConversionCtx* ctx = new core::conversion::ConversionCtx({});
@@ -64,6 +65,7 @@ std::vector<torch::jit::IValue> EvaluateGraph(const torch::jit::Block* b, std::v
 std::vector<torch::jit::IValue> EvaluateGraphJIT(
     std::shared_ptr<torch::jit::Graph>& g,
     std::vector<torch::jit::IValue> inputs) {
+  core::util::initCuda();
   LOG_DEBUG("Running JIT version");
 
   torch::jit::GraphExecutor executor(g, "");

@@ -13,6 +13,7 @@ std::vector<at::Tensor> RunGraph(
     std::shared_ptr<torch::jit::Graph>& g,
     core::ir::StaticParams& params,
     std::vector<at::Tensor> inputs) {
+  core::util::initCuda();
   LOG_DEBUG("Running JIT version");
   std::vector<torch::jit::IValue> inputs_;
   for (auto in : inputs) {

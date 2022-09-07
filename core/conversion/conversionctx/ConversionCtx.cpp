@@ -2,6 +2,7 @@
 #include <iostream>
 #include <sstream>
 #include <utility>
+#include "cuda.h"
 
 namespace torch_tensorrt {
 namespace core {
@@ -44,6 +45,22 @@ ConversionCtx::ConversionCtx(BuilderSettings build_settings)
           util::logging::get_logger().get_reportable_severity(),
           util::logging::get_logger().get_is_colored_output_on()) {
   // TODO: Support FP16 and FP32 from JIT information
+  util::initCuda();
+  CUmoduleLoadingMode mode{CU_MODULE_LAZY_LOADING};
+  CUresult res = cuModuleGetLoadingMode(&mode);
+  if (res != CUDA_SUCCESS) {
+    std::cout << "error" << std::endl;
+  } else {
+    std::cout << "cuModuleGetLoadingMode API return status: " << res << " mode: " << mode << std::endl;
+  }
+
+  if (mode == CU_MODULE_LAZY_LOADING) {
+    std::cout << "Lazy loading enabled" << std::endl;
+  } else {
+    std::cout << "Lazy loading disabled" << std::endl;
+  }
+  assert(1 == 0);
+
   if (settings.device.gpu_id) {
     TORCHTRT_CHECK(
         cudaSetDevice(settings.device.gpu_id) == cudaSuccess, "Unable to set gpu id: " << settings.device.gpu_id);

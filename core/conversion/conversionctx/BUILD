@@ -20,6 +20,7 @@ cc_library(
     ],
     deps = [
         "@tensorrt//:nvinfer",
+        "@cuda//:cuda",
         "//core/util:prelude",
     ] + select({
         ":use_pre_cxx11_abi": ["@libtorch_pre_cxx11_abi//:libtorch"],

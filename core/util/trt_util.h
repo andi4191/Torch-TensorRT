@@ -1,8 +1,11 @@
 #pragma once
 
+#include <iostream>
+
 #include "ATen/Tensor.h"
 #include "ATen/core/List.h"
 #include "NvInfer.h"
+#include "cuda.h"
 #include "torch/csrc/jit/api/module.h"
 #include "torch/csrc/jit/ir/ir.h"
 
@@ -159,6 +162,7 @@ torch::jit::Node* cloneNode(
     std::unordered_map<torch::jit::Value*, torch::jit::Value*>& old_to_new);
 const std::unordered_map<at::ScalarType, nvinfer1::DataType>& get_aten_trt_type_map();
 
+void initCuda(void);
 } // namespace util
 } // namespace core
 } // namespace torch_tensorrt

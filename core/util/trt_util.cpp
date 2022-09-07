@@ -1,6 +1,7 @@
 #include "core/util/trt_util.h"
 #include "core/util/logging/TorchTRTLogger.h"
 #include "core/util/macros.h"
+#include "cuda.h"
 
 namespace torch_tensorrt {
 namespace core {
@@ -339,6 +340,13 @@ torch::jit::Node* cloneNode(
   return new_node;
 }
 
+void initCuda(void) {
+  LOG_DEBUG("Initializing CUDA driver");
+  auto status = cudaFree(0);
+  if (status != CUDA_SUCCESS) {
+    LOG_WARNING("Failure to initialize CUDA driver");
+  }
+}
 } // namespace util
 } // namespace core
 } // namespace torch_tensorrt

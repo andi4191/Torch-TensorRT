@@ -549,6 +549,11 @@ TORCHTRT_API void dump_build_info();
  */
 TORCHTRT_API void set_device(const int gpu_id);
 
+/**
+ * @brief Initialize CUDA Driver
+ */
+TORCHTRT_API void initialize_cuda_driver();
+
 namespace torchscript {
 /**
  * Settings data structure for Torch-TensorRT TorchScript compilation

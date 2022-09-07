@@ -7,11 +7,13 @@ namespace tests {
 namespace util {
 
 torch::jit::IValue RunModuleForward(torch::jit::Module& mod, std::vector<torch::jit::IValue> inputs) {
+  core::util::initCuda();
   mod.to(at::kCUDA);
   return mod.forward(inputs);
 }
 
 std::vector<at::Tensor> RunModuleForwardAsEngine(torch::jit::Module& mod, std::vector<at::Tensor> inputs) {
+  core::util::initCuda();
   auto forward_graph = mod.get_method("forward");
   std::vector<c10::ArrayRef<int64_t>> input_ranges;
   for (auto in : inputs) {

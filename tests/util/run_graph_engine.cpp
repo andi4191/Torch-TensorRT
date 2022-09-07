@@ -79,6 +79,7 @@ std::vector<at::Tensor> RunGraphEngine(
     core::ir::StaticParams& named_params,
     std::vector<at::Tensor> inputs,
     nvinfer1::DataType op_precision = nvinfer1::DataType::kFLOAT) {
+  core::util::initCuda();
   LOG_DEBUG("Running TRT version");
   auto var_ins = get_var_inputs(g->inputs(), named_params);
   auto in = core::ir::pair_input_vals_with_specs(var_ins, toInputs(inputs));
@@ -94,6 +95,7 @@ std::vector<at::Tensor> RunGraphEngineDynamic(
     core::ir::StaticParams& named_params,
     std::vector<at::Tensor> inputs,
     bool dynamic_batch) {
+  core::util::initCuda();
   LOG_DEBUG("Running TRT version");
   auto var_ins = get_var_inputs(g->inputs(), named_params);
   auto in = core::ir::pair_input_vals_with_specs(var_ins, toInputsDynamic(inputs, dynamic_batch));

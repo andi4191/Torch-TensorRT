@@ -8,8 +8,9 @@
 #include "NvInfer.h"
 #include "torch/csrc/jit/ir/ir.h"
 
-#include <cuda_runtime.h>
 #include "core/util/prelude.h"
+#include "cuda.h"
+#include "cuda_runtime.h"
 
 namespace torch_tensorrt {
 namespace core {

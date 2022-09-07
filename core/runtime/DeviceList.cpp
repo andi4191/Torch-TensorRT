@@ -1,13 +1,19 @@
+#include "cuda.h"
 #include "cuda_runtime.h"
 
+#include <iostream>
 #include "core/runtime/runtime.h"
 #include "core/util/prelude.h"
-
 namespace torch_tensorrt {
 namespace core {
 namespace runtime {
 
 DeviceList::DeviceList() {
+  util::initCuda();
+  CUmoduleLoadingMode mode{CU_MODULE_LAZY_LOADING};
+  CUresult res = cuModuleGetLoadingMode(&mode);
+  assert(res == CUDA_SUCCESS);
+  std::cout << "[DeviceList]: Check CUDA loading mode: " << mode << std::endl;
   int num_devices = 0;
   auto status = cudaGetDeviceCount(&num_devices);
   if (status != cudaSuccess) {

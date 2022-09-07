@@ -1,10 +1,10 @@
 #include "torch/csrc/jit/api/module.h"
 
+#include <iostream>
 #include "core/compiler.h"
 #include "core/util/prelude.h"
-
+#include "cuda.h"
 #include "torch_tensorrt/torch_tensorrt.h"
-
 namespace torch_tensorrt {
 // Defined in types.cpp
 torch_tensorrt::core::runtime::CudaDevice to_internal_cuda_device(Device device);
@@ -27,7 +27,15 @@ std::string convert_method_to_trt_engine(
 }
 
 torch::jit::script::Module compile(const torch::jit::script::Module& module, CompileSpec info) {
+  torch_tensorrt::core::util::initCuda();
+  CUmoduleLoadingMode mode = CU_MODULE_LAZY_LOADING;
+  auto status = cuModuleGetLoadingMode(&mode);
+  if (status != CUDA_SUCCESS) {
+    std::cout << "Error using API  cuModuleGetLoadingMode. Return status:  " << status << std::endl;
+  }
+  std::cout << "[compile]: Check CUDA loading mode: " << mode << std::endl;
   LOG_DEBUG(get_build_info());
+  assert(1 == 0);
   // Want to export a much simpler (non TRT header dependent) API so doing the
   // type conversion here
   return torch_tensorrt::core::CompileGraph(module, to_internal_compile_spec(info));

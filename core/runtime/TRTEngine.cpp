@@ -1,7 +1,8 @@
 #include <algorithm>
 
-#include <cuda_runtime.h>
 #include "NvInfer.h"
+#include "cuda.h"
+#include "cuda_runtime.h"
 #include "torch/csrc/jit/frontend/function_schema_parser.h"
 
 #include "core/runtime/runtime.h"
@@ -38,6 +39,7 @@ TRTEngine::TRTEngine(std::vector<std::string> serialized_info) {
 }
 
 TRTEngine::TRTEngine(std::string mod_name, std::string serialized_engine, CudaDevice cuda_device) {
+  util::initCuda();
   auto most_compatible_device = get_most_compatible_device(cuda_device);
   TORCHTRT_CHECK(most_compatible_device, "No compatible device was found for instantiating TensorRT engine");
   device_info = most_compatible_device.value();

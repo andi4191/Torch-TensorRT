@@ -30,7 +30,6 @@ bool exactlyEqual(const at::Tensor& computed_tensor, const at::Tensor& gt_tensor
 
   return (computed_tensor - gt_tensor).abs().max().item<float>() == 0.f;
 }
-
 } // namespace util
 } // namespace tests
 } // namespace torch_tensorrt
